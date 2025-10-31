@@ -1,0 +1,310 @@
+Cursor Rules - Liquid Glass Template
+Vue d'ensemble
+Ce projet est un template Next.js avec un design "Liquid Glass" inspiré d'Apple, utilisant des effets de verre déformable et des animations fluides. Le projet utilise Next.js 14, TypeScript, Tailwind CSS et des composants personnalisés pour créer une interface moderne et élégante.
+
+Structure du projet
+Pages (pages/)
+index.tsx - Page d'accueil avec des cartes en verre
+
+admin.tsx - Page d'administration
+
+docs.tsx - Page de documentation
+
+\_app.tsx - Configuration globale de l'application
+
+Composants (src/components/)
+Layout.tsx - Layout principal avec sidebar et contenu
+
+Sidebar.tsx - Navigation latérale avec animations
+
+GlassCard.tsx - Composant de carte avec effet verre
+
+GlassButton.tsx - (Nouveau) Composant de bouton avec effet verre
+
+Sidebar.css - Styles spécifiques de la sidebar
+
+Styles (src/)
+index.css - Styles globaux avec variables CSS et arrière-plan aurora
+
+Composants et Blocs Utilisables
+
+1. GlassCard
+   Composant de base pour créer des éléments avec effet verre.
+
+TypeScript
+
+import GlassCard from "@/components/GlassCard";
+
+<GlassCard className="p-6">
+  <h2>Titre</h2>
+  <p>Contenu avec effet verre</p>
+</GlassCard>
+Props :
+
+children?: ReactNode - Contenu à afficher
+
+className?: string - Classes CSS additionnelles
+
+Note : Ce composant GlassCard utilise un effet de verre dépoli standard (CSS backdrop-filter: blur()). Il est léger et performant. Pour un effet de distorsion liquide interactif, voir la section "Utiliser les effets Liquid Glass" plus bas.
+
+2. GlassButton
+   Composant de base pour les boutons avec effet verre.
+
+Création du composant (src/components/GlassButton.tsx):
+
+TypeScript
+
+import React from 'react';
+
+type GlassButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+children: React.ReactNode;
+className?: string;
+};
+
+const GlassButton: React.FC<GlassButtonProps> = ({ children, className = '', ...props }) => {
+return (
+<button
+className={`        py-2 px-4 rounded-lg transition-all duration-300
+        bg-[var(--glass-bg)] border border-[var(--glass-border)]
+        text-[var(--text-color)]
+        backdrop-blur-md shadow-lg
+        hover:bg-white/10 hover:shadow-xl
+        focus:outline-none focus:ring-2 focus:ring-[var(--active-indicator-color)]
+        ${className}
+     `}
+{...props} >
+{children}
+</button>
+);
+};
+
+export default GlassButton;
+Utilisation :
+
+TypeScript
+
+import GlassButton from "@/components/GlassButton";
+
+<GlassButton onClick={() => alert('Clic !')}>
+Cliquez-moi
+</GlassButton> 3. Layout
+Layout principal qui gère la sidebar et le contenu.
+
+TypeScript
+
+import Layout from "@/components/Layout";
+
+export default function Page() {
+return (
+<Layout>
+<div className="p-8">
+{/_ Contenu de la page _/}
+</div>
+</Layout>
+);
+} 4. Sidebar
+Navigation latérale avec animations et icônes centrées.
+
+Structure :
+
+Logo (centré verticalement quand fermé)
+
+Titre (apparaît au survol)
+
+Boutons de navigation (icônes centrées quand fermé)
+
+Footer avec liens supplémentaires
+
+Comment modifier le projet
+
+1. Changer les titres
+   Titre de la sidebar : Modifier dans src/components/Sidebar.tsx :
+
+TypeScript
+
+<h1 className="sidebar-title">
+  <span className="title-line">
+    Votre Nouveau Titre
+  </span>
+</h1>
+Titre de la page : Modifier dans pages/_app.tsx ou directement dans chaque page :
+
+TypeScript
+
+<Head>
+  <title>Votre Nouveau Titre</title>
+</Head>
+2. Changer le logo
+Remplacer l'image :
+
+Placer votre logo dans le dossier public/ (ex: logo.png)
+
+Modifier dans src/components/Sidebar.tsx :
+
+TypeScript
+
+<img src="/votre-logo.png" alt="Votre Logo" />
+Ajuster les filtres CSS : Dans src/components/Sidebar.css, modifier le filtre pour adapter les couleurs :
+
+CSS
+
+.sidebar-logo img {
+filter: brightness(0) invert(1); /_ Ajuster selon vos besoins _/
+} 3. Ajouter des pages
+
+1. Créer une nouvelle page : Créez un fichier dans pages/ (ex: contact.tsx)
+
+TypeScript
+
+import Layout from "@/components/Layout";
+import GlassCard from "@/components/GlassCard";
+
+export default function Contact() {
+return (
+<Layout>
+<div className="p-8">
+<GlassCard>
+<h1>Contact</h1>
+<p>Contenu de la page contact</p>
+</GlassCard>
+</div>
+</Layout>
+);
+} 2. Ajouter à la navigation : Dans src/components/Sidebar.tsx, importez le hook useRouter de Next.js pour gérer l'état "actif" et l'icône souhaitée (ex: Mail de lucide-react).
+
+TypeScript
+
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { Home, FileText, Settings, Mail } from 'lucide-react'; // 1. Importer l'icône
+// ... autres imports
+
+export default function Sidebar() {
+const router = useRouter(); // 2. Initialiser le routeur
+
+// 3. Fonction helper pour déterminer le lien actif
+const isActive = (pathname: string) => {
+return router.pathname === pathname;
+};
+
+return (
+<nav className="sidebar">
+{/_ ... Logo et Titre ... _/}
+<ul className="nav-links">
+{/_ ... autres liens (ex: Accueil, Docs, Admin) ... _/}
+
+        {/* 4. Ajouter le nouveau lien */}
+        <li>
+          <Link href="/contact" className={isActive("/contact") ? "nav-link active" : "nav-link"}>
+            <div className="nav-link-content">
+              <Mail size={20} />
+              <span>Contact</span>
+            </div>
+          </Link>
+        </li>
+      </ul>
+      {/* ... Reste de la sidebar ... */}
+    </nav>
+
+);
+} 4. Personnaliser les couleurs et thèmes
+Variables CSS globales : Dans src/index.css, modifier les variables :
+
+CSS
+
+:root {
+--glass-bg: rgba(17, 17, 22, 0.6);
+--glass-border: rgba(255, 255, 255, 0.08);
+--text-color: #e5e7eb;
+--active-indicator-color: #a78bfa;
+}
+Arrière-plan aurora : L'effet aurora est défini dans src/index.css avec des animations CSS complexes.
+
+5. Utiliser les effets Liquid Glass
+   Pour des effets plus avancés, vous pouvez intégrer la bibliothèque liquid-glass-react :
+
+Bash
+
+npm install liquid-glass-react
+Rappel : Ceci est une bibliothèque optionnelle pour un effet de distorsion liquide interactif. Elle est plus gourmande en ressources que les composants GlassCard et GlassButton de base, qui utilisent un simple effet CSS backdrop-filter.
+
+Exemple d'utilisation :
+
+TypeScript
+
+import LiquidGlass from 'liquid-glass-react';
+
+<LiquidGlass
+displacementScale={64}
+blurAmount={0.1}
+saturation={130}
+aberrationIntensity={2}
+elasticity={0.35}
+cornerRadius={100}
+padding="8px 16px"
+onClick={() => console.log('Clic !')}
+
+> <span>Votre contenu</span>
+> </LiquidGlass>
+> Propriétés principales :
+
+displacementScale: Intensité de la déformation (70 par défaut)
+
+blurAmount: Niveau de flou/verre dépoli (0.0625 par défaut)
+
+saturation: Saturation des couleurs (140 par défaut)
+
+aberrationIntensity: Intensité de l'aberration chromatique (2 par défaut)
+
+elasticity: Élasticité "liquide" (0.15 par défaut)
+
+cornerRadius: Rayon des coins (999 par défaut)
+
+Animations et États
+Sidebar
+Fermée : Largeur 100px, icônes centrées, logo centré verticalement
+
+Ouverte : Largeur 240px, icônes alignées à gauche, texte visible, logo en haut
+
+Transitions
+Toutes les animations utilisent des transitions CSS de 0.3s avec ease pour la fluidité.
+
+Bonnes pratiques
+Toujours utiliser Layout pour les nouvelles pages
+
+Utiliser GlassCard et GlassButton pour les éléments d'interface principaux
+
+Respecter la palette de couleurs définie dans les variables CSS
+
+Tester les animations sur différents navigateurs
+
+Optimiser les images avant de les placer dans public/
+
+Technologies utilisées
+Next.js 14 - Framework React avec SSR
+
+TypeScript - Typage statique
+
+Tailwind CSS - Framework CSS utilitaire
+
+Lucide React - Icônes modernes
+
+CSS Custom Properties - Variables CSS pour la thématisation
+
+Structure des fichiers recommandée
+pages/
+├── index.tsx # Accueil
+├── admin.tsx # Administration
+├── docs.tsx # Documentation
+└── [nouvelle-page].tsx # Nouvelles pages
+
+src/components/
+├── Layout.tsx # Layout principal
+├── Sidebar.tsx # Navigation
+├── GlassCard.tsx # Composant verre
+├── GlassButton.tsx # Composant bouton
+└── [nouveau-component].tsx
+
+public/
+├── logo.png # Logo personnalisé
+└── [autres-assets]

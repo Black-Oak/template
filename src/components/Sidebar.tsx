@@ -11,17 +11,12 @@ export default function Sidebar() {
     <div className="sidebar-container">
       <div className="sidebar-logo-container">
         <div className="sidebar-logo">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-          </svg>
+          <img src="/logo_bo_blanc.png" alt="Logo" />
         </div>
       </div>
 
       <h1 className="sidebar-title">
-        <span className="title-line">
-          <span className="title-short">App</span>
-          <span className="title-full">My App</span>
-        </span>
+        <span className="title-line">My App</span>
       </h1>
 
       <nav aria-label="Navigation principale">
